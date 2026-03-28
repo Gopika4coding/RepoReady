@@ -9,7 +9,6 @@ function parseURL(input) {
 }
 
 async function startAssessment() {
-
     const input = document.getElementById("repoInput").value;
     const repo = parseURL(input);
 
@@ -27,7 +26,8 @@ async function startAssessment() {
         render(result);
 
     } catch (e) {
-        document.getElementById("result").innerHTML = `<p class="error">${e.message}</p>`;
+        document.getElementById("result").innerHTML =
+            `<p class="error">${e.message}</p>`;
     }
 
     document.getElementById("loading").classList.add("hidden");
@@ -36,23 +36,27 @@ async function startAssessment() {
 function render(data) {
 
     let html = `
-        <div class="result-card">
-        <h2>Score: ${data.score}/100</h2>
-        <p>${data.summary}</p>
+    <div class="result-card">
+    <h2>${data.score}/100</h2>
+    <p>${data.summary}</p>
+    <p><strong>Project Type:</strong> ${data.type}</p>
     `;
 
     data.checks.forEach(c => {
         html += `
-        <p>
-        ${c.passed ? "✅" : "❌"} ${c.label} (${c.score}/${c.max})<br>
-        <small>${c.rationale}</small>
-        </p>`;
+        <div class="check ${c.score === c.max ? "pass" : "fail"}">
+            <strong>${c.label}</strong> (${c.score}/${c.max})<br>
+            <small>${c.rationale}</small>
+        </div>`;
     });
 
     html += `<h3>Fix Checklist</h3>`;
 
     data.fixes.forEach(f => {
-        html += `<p>⚠ ${f.task} (${f.impact})</p>`;
+        html += `
+        <div class="fix ${f.impact.toLowerCase()}">
+            ${f.task} (${f.impact})
+        </div>`;
     });
 
     html += `</div>`;
@@ -65,6 +69,6 @@ window.onload = () => {
     const last = loadResult();
     if (last) {
         document.getElementById("restore").innerHTML =
-            `<button onclick='render(${JSON.stringify(last)})'>Load Last Report</button>`;
+            `<button onclick='render(${JSON.stringify(last)})'>Load Last Assessment</button>`;
     }
 };
