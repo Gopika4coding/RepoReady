@@ -4,7 +4,6 @@ const resultDiv = document.getElementById("result");
 const loading = document.getElementById("loading");
 
 const CACHE_KEY = "repoready_cache";
-const GITHUB_TOKEN = ""; // OPTIONAL (add your token here)
 
 // EVENTS
 btn.addEventListener("click", handleAssessment);
@@ -12,15 +11,29 @@ input.addEventListener("keypress", e => {
     if (e.key === "Enter") handleAssessment();
 });
 
-// LOADING
-function showLoading(state) {
-    loading.classList.toggle("hidden", !state);
-    btn.disabled = state;
-}
+// PARSE ANY GITHUB URL
+function extractRepo(input) {
+    input = input.trim();
 
-// ERROR
-function showError(msg) {
-    resultDiv.innerHTML = `<div class="result-card error">❌ ${msg}</div>`;
+    // Remove .git
+    input = input.replace(".git", "");
+
+    // If full URL
+    if (input.includes("github.com")) {
+        const parts = input.split("github.com/")[1].split("/");
+        return {
+            owner: parts[0],
+            repo: parts[1]
+        };
+    }
+
+    // If owner/repo
+    const parts = input.split("/");
+    if (parts.length === 2) {
+        return { owner: parts[0], repo: parts[1] };
+    }
+
+    return null;
 }
 
 // CACHE
@@ -34,21 +47,32 @@ function setCache(key, data) {
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
 }
 
-// MAIN FUNCTION
-async function handleAssessment() {
-    const value = input.value.trim();
+// LOADING
+function showLoading(state) {
+    loading.classList.toggle("hidden", !state);
+    btn.disabled = state;
+}
 
-    if (!value.includes("/")) {
-        showError("Enter format: owner/repo");
+// ERROR
+function showError(msg) {
+    resultDiv.innerHTML = `<div class="result-card error">❌ ${msg}</div>`;
+}
+
+// MAIN
+async function handleAssessment() {
+    const parsed = extractRepo(input.value);
+
+    if (!parsed) {
+        showError("Invalid GitHub URL or format");
         return;
     }
 
-    const [owner, repo] = value.split("/");
-    const cacheKey = `${owner}/${repo}`;
+    const { owner, repo } = parsed;
+    const key = `${owner}/${repo}`;
 
     const cache = getCache();
-    if (cache[cacheKey]) {
-        render(cache[cacheKey].data);
+    if (cache[key]) {
+        render(cache[key].data);
         alert("Loaded from cache ⚡");
         return;
     }
@@ -58,7 +82,7 @@ async function handleAssessment() {
     try {
         const data = await assessRepository(owner, repo);
         render(data);
-        setCache(cacheKey, data);
+        setCache(key, data);
     } catch (err) {
         showError(err.message);
     } finally {
@@ -66,28 +90,18 @@ async function handleAssessment() {
     }
 }
 
-// FETCH DATA
+// FETCH
 async function assessRepository(owner, repo) {
-    const headers = {
-        "Accept": "application/vnd.github+json"
-    };
-
-    if (GITHUB_TOKEN) {
-        headers["Authorization"] = `token ${GITHUB_TOKEN}`;
-    }
-
     const base = `https://api.github.com/repos/${owner}/${repo}`;
 
     const [repoRes, readmeRes, tagsRes] = await Promise.all([
-        fetch(base, { headers }),
-        fetch(`${base}/readme`, { headers }).catch(() => null),
-        fetch(`${base}/tags`, { headers }).catch(() => null)
+        fetch(base),
+        fetch(`${base}/readme`).catch(() => null),
+        fetch(`${base}/tags`).catch(() => null)
     ]);
 
     if (!repoRes.ok) {
-        if (repoRes.status === 404) throw new Error("Repository not found");
-        if (repoRes.status === 403) throw new Error("GitHub API rate limit hit");
-        throw new Error("GitHub API error");
+        throw new Error("Repository not found or API error");
     }
 
     const repoData = await repoRes.json();
@@ -114,7 +128,7 @@ async function assessRepository(owner, repo) {
     };
 }
 
-// SCORING LOGIC
+// SCORE
 function calculateScore(repo, readme, tags) {
     let score = 0;
 
@@ -130,13 +144,13 @@ function calculateScore(repo, readme, tags) {
 
 // AI INSIGHT
 function generateInsight(score) {
-    if (score >= 80) return "🚀 Excellent: Research-ready repository";
+    if (score >= 80) return "🚀 Excellent: Research-ready";
     if (score >= 60) return "⚠️ Good: Minor improvements needed";
-    if (score >= 40) return "❗ Fair: Needs improvement";
-    return "🚨 Poor: Not ready for research use";
+    if (score >= 40) return "❗ Fair: Needs work";
+    return "🚨 Poor: Not research-ready";
 }
 
-// RENDER UI
+// RENDER
 function render(data) {
     resultDiv.innerHTML = `
         <div class="result-card">
@@ -146,7 +160,7 @@ function render(data) {
             <p>🍴 Forks: ${data.forks}</p>
             <p>🐛 Issues: ${data.issues}</p>
 
-            <div class="score">Score: ${data.score}/100</div>
+            <h3>Score: ${data.score}/100</h3>
 
             <div class="progress-bar">
                 <div class="progress-fill" style="width:${data.score}%"></div>
