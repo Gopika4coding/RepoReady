@@ -1,52 +1,240 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RepoReady Pro</title>
-<link rel="stylesheet" href="style.css">
-</head>
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: #F8F9FA;
+    background: url('https://images.unsplash.com/photo-1518770660439-4636190af475') no-repeat center center/cover;
+}
 
-<body>
+/* Dark overlay */
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(2, 6, 23, 0.85);
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
 
-<div class="overlay"></div>
+/* ===== HEADER ===== */
+.header {
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.6);
+    padding: 12px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    z-index: 10;
+}
 
-<header class="header">
-    <h2>RepoReady Pro</h2>
-    <span class="live">● Live Assessment</span>
-</header>
+.header h2 {
+    margin: 0;
+    font-weight: 600;
+}
 
-<div class="app">
+.live {
+    color: #22c55e;
+    font-weight: 500;
+    animation: pulse 1.2s infinite;
+}
 
-    <h1>GitHub Research Readiness Analyzer</h1>
-    <p class="subtitle">Analyze any repository like a pro 🚀</p>
+@keyframes pulse {
+    50% { opacity: 0.4; }
+}
 
-    <div class="input-card">
-        <input id="repoInput" placeholder="https://github.com/owner/repo">
-        <button onclick="startAssessment()">Analyze</button>
-    </div>
+/* ===== MAIN APP ===== */
+.app {
+    max-width: 1100px;
+    margin: auto;
+    padding: 40px 20px;
+}
 
-    <div id="loading" class="loading hidden">
-        <div class="spinner"></div>
-        <p>Analyzing repository...</p>
-    </div>
+h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
 
-    <div id="result"></div>
+.subtitle {
+    text-align: center;
+    color: #cbd5f5;
+    margin-bottom: 30px;
+}
 
-    <div class="actions hidden" id="actions">
-        <button onclick="downloadJSON()">⬇ JSON</button>
-        <button onclick="downloadHTML()">⬇ Report</button>
-    </div>
+/* ===== INPUT ===== */
+.input-card {
+    display: flex;
+    gap: 10px;
+    background: rgba(30, 41, 59, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 12px;
+    border-radius: 14px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+}
 
-    <div id="restore"></div>
+input {
+    flex: 1;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+}
 
-</div>
+button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #22c55e;
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s ease;
+}
 
-<script src="githubService.js"></script>
-<script src="assessmentService.js"></script>
-<script src="storageService.js"></script>
-<script src="exportService.js"></script>
-<script src="app.js"></script>
+button:hover {
+    background: #16a34a;
+}
 
-</body>
-</html>
+/* ===== LOADING ===== */
+.loading {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.hidden {
+    display: none;
+}
+
+.spinner {
+    border: 4px solid #334155;
+    border-top: 4px solid #22c55e;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    margin: auto;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== RESULT CARD ===== */
+.result-card {
+    margin-top: 30px;
+    background: rgba(30, 41, 59, 0.9);
+    backdrop-filter: blur(12px);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== SCORE ===== */
+.result-card h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #4ade80;
+}
+
+/* ===== CHECKS ===== */
+.check {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.6);
+}
+
+.check.pass {
+    border-left: 5px solid #22c55e;
+}
+
+.check.fail {
+    border-left: 5px solid #ef4444;
+}
+
+.check small {
+    color: #cbd5f5;
+}
+
+/* ===== FIX CHECKLIST ===== */
+.fix {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.7);
+}
+
+.fix.high {
+    border-left: 5px solid #ef4444;
+}
+
+.fix.medium {
+    border-left: 5px solid #facc15;
+}
+
+.fix.low {
+    border-left: 5px solid #22c55e;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.actions button {
+    background: #3b82f6;
+}
+
+.actions button:hover {
+    background: #2563eb;
+}
+
+/* ===== RESTORE BUTTON ===== */
+#restore {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#restore button {
+    background: #6366f1;
+}
+
+#restore button:hover {
+    background: #4f46e5;
+}
+
+/* ===== ERROR ===== */
+.error {
+    color: #f87171;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .input-card {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+}
