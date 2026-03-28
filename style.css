@@ -1,8 +1,18 @@
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
+    background: url('https://images.unsplash.com/photo-1518770660439-4636190af475') no-repeat center center/cover;
+}
+
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 
 .app {
@@ -13,19 +23,18 @@ body {
 
 h1 {
     text-align: center;
-    margin-bottom: 5px;
 }
 
 .subtitle {
     text-align: center;
-    color: #94a3b8;
+    color: #cbd5f5;
     margin-bottom: 25px;
 }
 
 .input-card {
     display: flex;
     gap: 10px;
-    background: #1e293b;
+    background: rgba(30, 41, 59, 0.9);
     padding: 12px;
     border-radius: 12px;
 }
@@ -35,7 +44,6 @@ input {
     padding: 12px;
     border-radius: 8px;
     border: none;
-    outline: none;
 }
 
 button {
@@ -43,7 +51,6 @@ button {
     border: none;
     border-radius: 8px;
     background: #22c55e;
-    color: black;
     font-weight: bold;
     cursor: pointer;
 }
@@ -77,14 +84,9 @@ button:hover {
 
 .result-card {
     margin-top: 30px;
-    background: #1e293b;
+    background: rgba(30, 41, 59, 0.9);
     padding: 20px;
     border-radius: 12px;
-}
-
-.score {
-    font-size: 28px;
-    font-weight: bold;
 }
 
 .progress-bar {
@@ -103,8 +105,8 @@ button:hover {
 
 .ai {
     margin-top: 12px;
+    color: #cbd5f5;
     font-style: italic;
-    color: #94a3b8;
 }
 
 .error {
