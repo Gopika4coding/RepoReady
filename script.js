@@ -40,3 +40,30 @@ async function handleAssessment(input) {
         hideLoading();
     }
 }
+
+// THEME TOGGLE
+const themeSwitch = document.getElementById('themeSwitch');
+
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark');
+    themeSwitch.checked = true;
+}
+
+themeSwitch.addEventListener('change', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme',
+        document.body.classList.contains('dark') ? 'dark' : 'light'
+    );
+});
+
+// ABOUT MODAL
+const aboutBtn = document.getElementById('aboutBtn');
+const modal = document.getElementById('aboutModal');
+const closeBtn = document.getElementById('closeAbout');
+
+aboutBtn.onclick = () => modal.style.display = "block";
+closeBtn.onclick = () => modal.style.display = "none";
+
+window.onclick = (e) => {
+    if (e.target === modal) modal.style.display = "none";
+};
