@@ -1,114 +1,52 @@
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    color: white;
-    background: url('https://images.unsplash.com/photo-1518770660439-4636190af475') no-repeat center center/cover;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RepoReady Pro</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
-.overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.85);
-    top: 0;
-    left: 0;
-    z-index: -1;
-}
+<body>
 
-.app {
-    max-width: 900px;
-    margin: auto;
-    padding: 40px 20px;
-}
+<div class="overlay"></div>
 
-h1 {
-    text-align: center;
-}
+<header class="header">
+    <h2>RepoReady Pro</h2>
+    <span class="live">● Live Assessment</span>
+</header>
 
-.subtitle {
-    text-align: center;
-    color: #cbd5f5;
-    margin-bottom: 25px;
-}
+<div class="app">
 
-.input-card {
-    display: flex;
-    gap: 10px;
-    background: rgba(30, 41, 59, 0.9);
-    padding: 12px;
-    border-radius: 12px;
-}
+    <h1>GitHub Research Readiness Analyzer</h1>
+    <p class="subtitle">Analyze any repository like a pro 🚀</p>
 
-input {
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-}
+    <div class="input-card">
+        <input id="repoInput" placeholder="https://github.com/owner/repo">
+        <button onclick="startAssessment()">Analyze</button>
+    </div>
 
-button {
-    padding: 12px 18px;
-    border: none;
-    border-radius: 8px;
-    background: #22c55e;
-    font-weight: bold;
-    cursor: pointer;
-}
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Analyzing repository...</p>
+    </div>
 
-button:hover {
-    background: #16a34a;
-}
+    <div id="result"></div>
 
-.loading {
-    text-align: center;
-    margin-top: 30px;
-}
+    <div class="actions hidden" id="actions">
+        <button onclick="downloadJSON()">⬇ JSON</button>
+        <button onclick="downloadHTML()">⬇ Report</button>
+    </div>
 
-.hidden {
-    display: none;
-}
+    <div id="restore"></div>
 
-.spinner {
-    border: 4px solid #ccc;
-    border-top: 4px solid #22c55e;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    margin: auto;
-    animation: spin 1s linear infinite;
-}
+</div>
 
-@keyframes spin {
-    100% { transform: rotate(360deg); }
-}
+<script src="githubService.js"></script>
+<script src="assessmentService.js"></script>
+<script src="storageService.js"></script>
+<script src="exportService.js"></script>
+<script src="app.js"></script>
 
-.result-card {
-    margin-top: 30px;
-    background: rgba(30, 41, 59, 0.9);
-    padding: 20px;
-    border-radius: 12px;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 10px;
-    background: #2d3748;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #22c55e, #4ade80);
-    border-radius: 10px;
-}
-
-.ai {
-    margin-top: 12px;
-    color: #cbd5f5;
-    font-style: italic;
-}
-
-.error {
-    color: #f87171;
-}
+</body>
+</html>
