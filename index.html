@@ -1,12 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RepoReady - Research Software Readiness Assessment</title>
-    <link rel="stylesheet" href="style.css">
-</head>
 <body>
+    <div class="top-bar">
+        <button id="aboutBtn" class="about-btn">About Us</button>
+
+        <div class="theme-toggle">
+            <label class="switch">
+                <input type="checkbox" id="themeSwitch">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1 class="logo">RepoReady</h1>
@@ -22,29 +25,35 @@
                 <p class="input-label">ENTER A PUBLIC GITHUB URL TO BEGIN ASSESSMENT</p>
                 
                 <div class="url-input-group">
-                    <div class="url-prefix">https://github.com/</div>
-                    <input type="text" id="repoInput" class="repo-input" placeholder="owner/repo">
+                    <input type="text" id="repoInput" class="repo-input" placeholder="Paste full GitHub URL or owner/repo">
                     <button id="assessBtn" class="assess-btn">ASSESS →</button>
                 </div>
-                
+
                 <div class="demo-section">
-                    <p class="demo-label">TRY THESE:</p>
-                    <div class="demo-buttons">
-                        <button id="loadLastBtn" class="demo-btn">Load Last Assessment</button>
-                    </div>
+                    <button id="loadLastBtn" class="demo-btn">Load Last Assessment</button>
                 </div>
             </div>
         </div>
 
         <div id="loading" class="loading" style="display: none;">
             <div class="spinner"></div>
-            <p>Analyzing repository structure and best practices...</p>
-            <p class="loading-subtitle">This may take a few seconds</p>
+            <p>Analyzing repository...</p>
         </div>
 
-        <div id="result" class="result-container"></div>
+        <div id="result"></div>
+    </div>
+
+    <!-- ABOUT MODAL -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span id="closeAbout">&times;</span>
+            <h2>About RepoReady</h2>
+            <p>
+                RepoReady evaluates GitHub repositories for research readiness.
+                It checks documentation, testing, CI/CD, licensing, and more.
+            </p>
+        </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-</html>
